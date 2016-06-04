@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.zjf.model.OrderMapper">
+
+	<!-- 获取一个Order对象 -->
+	<!-- 使用一条SQL语句 -->
+	<select id="get" resultType="order" parameterType="int"
+		resultMap="orderMap">
+		SELECT * FROM orders o,USER u WHERE o.id=#{id} and
+		o.user_id=u.id
+	</select>
+	<resultMap type="order" id="orderMap">
+		<!-- 属性的整合 -->
+		<id property="id" column="id" />
+		<result property="price" column="price" />
+		<result property="info" column="info" />
+		<!-- 映射复杂对象 -->
+		<association property="user" javaType="user">
+			<id property="id" column="user_id" />
+			<result property="name" column="name" />
+			<result property="sex" column="sex" />
+		</association>
+	</resultMap>
+
+
+	<!-- 使用多条SQL查询关联对象 -->
+	<select id="getOrder" parameterType="int" resultType="order"
+		resultMap="orderMap1">
+		select * from orders where id=#{id}
+	</select>
+	<!-- 查询user -->
+	<select id="getUser" resultType="user" parameterType="int">
+		select *
+		from user where id=#{id}
+	</select>
+	<resultMap type="order" id="orderMap1">
+		<id property="id" column="id" />
+		<result property="price" column="price" />
+		<result property="info" column="info" />
+		<!-- 关联对象的属性 -->
+		<association property="user" column="user_id" select="getUser"
+			javaType="user"></association>
+	</resultMap>
+
+
+	<!-- 使用一条查询语句查询user -->
+	<select id="getUser1" resultType="user" parameterType="int"
+		resultMap="userMap">
+		SELECT u.id uid,u.name,u.sex,o.id
+		oid,o.info,o.price,o.user_id FROM USER u,orders o WHERE u.id=#{id} AND
+		o.user_id=u.id
+	</select>
+	<resultMap type="user" id="userMap">
+		<id property="id" column="uid" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<!-- 映射集合对象 ofType 集合中元素的类 -->
+		<collection property="orders" ofType="order">
+			<id property="id" column="oid" />
+			<result property="price" column="price" />
+			<result property="info" column="info" />
+		</collection>
+	</resultMap>
+
+
+	<!-- 使用子查询(多条SQL)查询关联的集合属性 -->
+	<select id="getUser2" resultType="user" parameterType="int" resultMap="userMap1">
+		select * from user where id=#{id}
+	</select>
+	<!--  -->
+	<select id="getOrders" resultType="order" parameterType="int">
+		select * from orders where user_id=#{id}
+	</select>
+	<resultMap type="user" id="userMap1">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="sex" column="sex" />
+		<collection property="orders" select="getOrders" column="id" ofType="order"></collection>
+	</resultMap>
+</mapper>

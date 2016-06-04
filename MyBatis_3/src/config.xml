@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 加载外部数据源属性文件 -->
+	<properties  resource="db.properties">
+		<!-- *** resource 属性文件中的配置优先级更高 -->
+		<property name="db.username" value="root1"/>
+	</properties>
+	<typeAliases>
+		<typeAlias type="cn.com.zjf.model2.User" alias="user"/>
+	</typeAliases>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			
+			<dataSource type="POOLED">
+				<!-- 动态取值 -->
+				<property name="driver" value="${db.driver}" />
+				<property name="url" value="${db.url}" />
+				<property name="username" value="${db.username}" />
+				<property name="password" value="${db.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper class="cn.com.zjf.model.UserMapper"/>
+		<mapper resource="cn/com/zjf/model1/UserMapper.xml"/>
+		<mapper resource="cn/com/zjf/model2/UserMapper.xml"/>
+	</mappers>
+</configuration>

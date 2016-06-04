@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.zjf.model.ProductMapper">
+	<!-- 启用二级缓存 -->
+	<cache flushInterval="60000" readOnly="true" size="100"></cache>
+	<!-- 查询价格在min到max之间的产品
+		.如果只有min  >=min
+		.如果只有max  <=max
+		.都没有  查询全部的
+		.都有   min<=  <=max
+	 -->
+	 <select id="getProducts" parameterType="java.util.Map" resultType="product">
+	 	select * from product
+	 	<if test="min!=null and max==null">
+	 		<![CDATA[where price >= #{min}]]>
+	 	</if>
+	 	<if test="min==null and max!=null">
+	 		<![CDATA[where price<=#{max}]]>
+	 		
+	 	</if>
+	 	<if test="min!=null and max!=null">
+	 		<![CDATA[where price between #{min} and #{max}]]>
+	 	</if>
+	 </select>
+	 <!-- 模糊查询(name,price)
+	 	  .如果一个为null,则使用不为null的字段进行模糊查询
+	 	  .连个都为null  查询全部
+	  -->
+	  <select id="getProductsLike" parameterType="java.util.Map" resultType="product">
+	  		
+	  		<!-- 为参数添加前缀或者后缀 -->
+	  		<if test="name!=null">
+	  			<bind name="name_pattern" value="'%' + name + '%'" />
+	  		</if>
+	  		<if test="price!=null">
+	  			<bind name="price_pattern" value="'%' + price + '%'"  />
+	  		</if>
+	  		select * from product
+	  		<if test="name==null and price!=null">
+	  			where price like #{price_pattern}
+	  		</if>
+	  		<if test="name!=null and price==null">
+	  			where name like #{name_pattern}
+	  		</if>
+	  		<if test="name!=null and price!=null">
+	  			where price like #{price_pattern}  and name like #{name_pattern}
+	  		</if>
+	  
+	  </select>
+	  <!--  -->
+	  <delete id="delete" parameterType="int" >
+	  	delete from product where id=#{id}
+	  </delete>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.zjf.model2.UserMapper">
+
+
+	<!--解决模型对象的属性和数据表字段不匹配的问题  
+		1.使用 字段别名
+		2.使用 resultMap 元素映射结果集
+	-->
+	<!--简化  resultType||parameterType 的配置 
+	
+		在配置文件中使用<typeAliases>节点进行配置
+	-->
+
+	<select id="get" parameterType="int" resultType="user">
+		select id,name as userName,sex as userSex from user where id=#{id}
+	</select>
+	<select id="getAll" resultType="user" resultMap="userMap">
+		select * from user
+	</select>
+	
+	
+	<!-- 定义一个结果集的映射关系 -->
+	<resultMap type="user" id="userMap">
+		<!-- 映射主键 -->
+		<id property="id" column="id"/>
+		<!-- 映射普通的属性 -->
+		<result property="userName" column="name"/>
+		<result property="userSex" column="sex"/>
+	</resultMap>
+</mapper>

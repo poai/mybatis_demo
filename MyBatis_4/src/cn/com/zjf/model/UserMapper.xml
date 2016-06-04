@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.zjf.model.UserMapper">
+
+	<!-- 获取一个User对象 -->
+	<select id="get" resultType="cn.com.zjf.model.User" parameterType="int">
+		select * from user where id=#{id}
+	</select>
+	<!-- 获取全部的User -->
+	<select id="getAll" resultType="cn.com.zjf.model.User">
+		select * from user
+	</select>
+	<!-- 保存操作 -->
+	<insert id="save" parameterType="cn.com.zjf.model.User">
+		insert into user(name,sex) values(#{name},#{sex})
+	</insert>
+	<!-- 更新操作 -->
+	<update id="update" parameterType="cn.com.zjf.model.User">
+		update user set name=#{name},sex=#{sex} where id=#{id} 
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterType="int">
+		delete from user where id=#{id}
+	</delete>
+</mapper>
